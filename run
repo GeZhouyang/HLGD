@@ -1,0 +1,19 @@
+#!/bin/bash
+
+ulimit -s unlimited
+
+export OMP_NUM_THREADS=2  ## number of OpenMP threads
+
+## hack 1
+#exe=$(grep 'TARGET = ' Makefile | sed -n -e 's/^TARGET = //p') ## executable
+## hack 2
+num=$(grep -o 'case_num = .*' param.f90 | sed -n 's/case_num = //p' | tr -d '"/') ## case number
+exe=HLGD$num
+
+dir=data$num/log.txt      ## directory of the log file
+
+cat /dev/null > $dir  ## clean the log file
+echo $(date) >> $dir  ## time stamp the log file
+echo >> $dir 
+
+./$exe >> $dir &
